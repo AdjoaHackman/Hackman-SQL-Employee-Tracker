@@ -16,7 +16,7 @@ function init() {
 
         .then((answers) => {
             if (answers.options === 'View all employees') {
-                connection.query('SELECT * FROM employee', function (err, results) {
+                connection.query('select employee.first_name, employee.last_name, role.title, department.name as department, role.salary, manager.first_name as manager_first_name, manager.last_name as manager_last_name from employee left join role on employee.role_id = role.id left join department on role.department_id = department.id left join employee manager on employee.manager_id = manager.id', function (err, results) {
                     console.table(results),
                         init()
                 }
@@ -51,12 +51,12 @@ function init() {
                     },
                     {
                         type: 'input',
-                        name: 'department',
-                        message: 'What is the name of the department',
+                        name: 'department_id',
+                        message: 'What is the ID for the department?',
                     },
                 ])
                     .then((data) => {
-                        connection.query('INSERT INTO role (title, salary) VALUES (?, ?, ?)', [data.role, data.salary, data.department_id], function (err, results) {
+                        connection.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [data.role, data.salary, data.department_id], function (err, results) {
                             connection.query(`SELECT * from role`, function (err, results) {
                                 console.table(results)
                                 init()
@@ -84,7 +84,7 @@ function init() {
                         {
                             type: 'input',
                             name: 'manager',
-                            message: 'Who is the manager for the employee?',
+                            message: 'What is the manager id for the employee',
                         },
                     ])
                         .then((data) => {
@@ -133,13 +133,14 @@ function init() {
                                 message: 'What is the name of the role?',
                             },
                         ])
+                        .then((data) => {
                         connection.query('UPDATE (role) FROM employee VALUES (?,?,?)', function (err, results) {
                             connection.query(`SELECT * from role`, function (err, results) {
                                 console.table(results)
                                 init()
                             }
                             )
-                        });
+                        })});
 
                     }
                 }
