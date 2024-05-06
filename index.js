@@ -15,14 +15,13 @@ function init() {
         ])
 
         .then((answers) => {
-            if (answers.options === 'View all employees') {
-                connection.query('select employee.first_name, employee.last_name, role.title, department.name as department, role.salary, manager.first_name as manager_first_name, manager.last_name as manager_last_name from employee left join role on employee.role_id = role.id left join department on role.department_id = department.id left join employee manager on employee.manager_id = manager.id', function (err, results) {
+            if (answers.options === 'View all departments') {
+                connection.query('SELECT * FROM department', function (err, results) {
                     console.table(results),
                         init()
                 }
                 )
-            }
-
+            };
             if (answers.options === 'View all roles') {
                 connection.query('SELECT * FROM role', function (err, results) {
                     console.table(results),
@@ -30,12 +29,31 @@ function init() {
                 }
                 )
             };
-            if (answers.options === 'View all departments') {
-                connection.query('SELECT * FROM department', function (err, results) {
+            if (answers.options === 'View all employees') {
+                connection.query('select employee.first_name, employee.last_name, role.title, department.name as department, role.salary, manager.first_name as manager_first_name, manager.last_name as manager_last_name from employee left join role on employee.role_id = role.id left join department on role.department_id = department.id left join employee manager on employee.manager_id = manager.id', function (err, results) {
                     console.table(results),
                         init()
                 }
                 )
+            };
+            if (answers.options === 'Add a department') {
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        name: 'department',
+                        message: 'What is the name of the department',
+                    },
+                ])
+                    .then((data) => {
+                        connection.query(`INSERT INTO department (name) VALUES (?)`, data.department, function (err, results) {
+                            connection.query(`SELECT * from department`, function (err, results) {
+                                console.table(results)
+                                init()
+                            })
+                        }
+                        )
+                    })
+
             };
             if (answers.options === 'Add a role') {
                 inquirer.prompt([
@@ -64,7 +82,7 @@ function init() {
                             )
                         })
                     });
-            }
+            };
             if (answers.options === 'Add an employee') {
                 inquirer.prompt([
                     {
@@ -97,102 +115,10 @@ function init() {
                             )
                         });
                     })
-            }
-            if (answers.options === 'Add a department') {
-                inquirer.prompt([
-                    {
-                        type: 'input',
-                        name: 'department',
-                        message: 'What is the name of the department',
-                    },
-                ])
-                    .then((data) => {
-                        connection.query(`INSERT INTO department (name) VALUES (?)`, data.department, function (err, results) {
-                            connection.query(`SELECT * from department`, function (err, results) {
-                                console.table(results)
-                                init()
-                            })
-                        }
-                        )
-                    })
-
             };
             if (answers.options === 'Update an employee role') {
                 updateEmployee()
             };
-            // async function getEmployees(cb) {
-            //     cb([
-            //         {
-            //             name: 'TEster',
-            //             id: 1,
-            //         },
-            //         {
-            //             name: 'test2',
-            //             id: 2,
-            //         },
-            //     ]);
-            // }
-
-            //  async function getEmployees(cb) {
-            //     cb(
-            //         connection.query('select employee.first_name, employee.last_name, role.title, department.name as department, role.salary, manager.first_name as manager_first_name, manager.last_name as manager_last_name from employee left join role on employee.role_id = role.id left join department on role.department_id = department.id left join employee manager on employee.manager_id = manager.id', function (err, results) {
-            //             console.table(results),
-            //                 init()
-            //         }
-            //         )
-            //     );
-            // }
-            // async function getRoles(cb) {
-            //     cb([
-            //         {
-            //             name: 'Director',
-            //             id: 1,
-            //         },
-            //         {
-            //             name: 'Employee',
-            //             id: 2,
-            //         },
-            //     ]);
-            // }
-
-            // getEmployees((employees) => {
-            //     getRoles((roles) => {
-            //         if (answers.options === 'Update an employee role') {
-            //             inquirer.prompt([
-            //                 {
-            //                     type: 'list',
-            //                     name: 'employee',
-            //                     message: 'Select an employee?',
-            //                     choices: employees.map((employee) => {
-            //                         return {
-            //                             name: employee.name,
-            //                             value: employee.id,
-            //                         };
-            //                     })
-            //                 },
-            //                 {
-            //                     type: 'list',
-            //                     name: 'role',
-            //                     message: 'Select a role',
-            //                     choices: roles.map((role) => {
-            //                         return {
-            //                             name: role.name,
-            //                             value: role.id,
-            //                         };
-            //                     }),
-            //                 },
-            //             ]).then((data) => {
-            //                 const { employee, role } = data;
-            //                 console.table(employee, role);
-            //                 const query = "UPDATE employee SET role_id = ? WHERE id = ?";
-            //                 db.query(query, [role, employee], (err, res) => {
-
-            //                 });
-            //             });
-            //         }
-            //     })
-            // })
-
         })
 }
 
@@ -230,6 +156,7 @@ async function updateEmployee() {
         const {employee, role} = data;
         const query = "UPDATE employee SET role_id = ? WHERE employee.id = ?";
         let res = connection.query(query, [role, employee], (err, res) => {
+            console.log("Employee role Updated!")
             init()
         });
 
