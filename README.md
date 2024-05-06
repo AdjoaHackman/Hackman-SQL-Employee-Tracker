@@ -16,7 +16,7 @@ This assignment allows for users to create, view and update departments, roles a
 
 
 # Installation
-1. Open the terminal in VS Code and install Inquirer <code>npm  i inquirer@8.2.4</code>. 
+1. Open the terminal in VS Code and install Inquirer <code>npm i inquirer@8.2.4</code>. 
 2. Install MySQL2 <code>npm  i mysql2</code>. 
 3. To run the application, type <code>node index</code> 
 

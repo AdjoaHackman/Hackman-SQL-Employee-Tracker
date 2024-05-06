@@ -87,27 +87,30 @@ function init() {
                 inquirer.prompt([
                     {
                         type: 'input',
-                        name: 'first',
+                        name: 'first_name',
                         message: 'What is the first name of the employee?',
                     },
                     {
                         type: 'input',
-                        name: 'last',
+                        name: 'last_name',
                         message: 'What is the last name of the employee?',
                     },
                     {
                         type: 'input',
-                        name: 'role',
-                        message: 'What is the name of the role?',
+                        name: 'role_id',
+                        message: 'What is the id for the role?',
                     },
                     {
                         type: 'input',
-                        name: 'manager',
+                        name: 'manager_id',
                         message: 'What is the manager id for the employee',
                     },
                 ])
                     .then((data) => {
-                        connection.query('INSERT INTO employee,(first name, last name, role_id, manager_id) VALUES (?, ?, ?, ?)', [data.role, data.salary, data.department_id], function (err, results) {
+                        connection.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [data.first_name, data.last_name, data.role_id, data.manager_id], function (err, results) {
+                            // console.log(results)
+                            // console.log(err)
+                            // console.table(results)
                             connection.query(`SELECT * from employee`, function (err, results) {
                                 console.table(results)
                                 init()
@@ -153,7 +156,7 @@ async function updateEmployee() {
             },
         ])
 
-        const {employee, role} = data;
+        const { employee, role } = data;
         const query = "UPDATE employee SET role_id = ? WHERE employee.id = ?";
         let res = connection.query(query, [role, employee], (err, res) => {
             console.log("Employee role Updated!")
