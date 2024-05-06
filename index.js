@@ -206,7 +206,7 @@ async function updateEmployee() {
             {
                 type: 'list',
                 name: 'employee',
-                message: 'Select an employee?',
+                message: 'Select an employee',
                 choices: employees.map((employee) => {
                     return {
                         name: employee.first_name + " " + employee.last_name,
@@ -228,9 +228,10 @@ async function updateEmployee() {
         ])
 
         const {employee, role} = data;
-        console.table(employee, role);
         const query = "UPDATE employee SET role_id = ? WHERE employee.id = ?";
-        let res = db.promise().query(query, [role, employee]);
+        let res = connection.query(query, [role, employee], (err, res) => {
+            init()
+        });
 
     } catch (error) {
         console.log(error)
