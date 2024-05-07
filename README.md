@@ -1,7 +1,7 @@
 # Hackman-SQL-Employee-Tracker
 
 # Live Screen Recording
-[Screen Recording]()
+[Screen Recording](https://app.screencastify.com/v3/watch/I3UughaAzP7napCraPs9)
 
 # Description
 This assignment allows for users to create, view and update departments, roles and employees as well as employee details within a database using MySQL2, Inquirer and Node.js. 
